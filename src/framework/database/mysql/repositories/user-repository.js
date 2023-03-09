@@ -1,14 +1,17 @@
 const Users = require('../models/users');
 const Profiles = require('../models/profiles');
 
-const userRepository = (sequilize, DataTypes) => {
-    const user = Users(sequilize, DataTypes);
-    const profileModel = Profiles(sequilize, DataTypes);
+const userRepository = (sequilize) => {
+    const user = Users(sequilize);
+    const profileModel = Profiles(sequilize);
     // find all
-    const findAll = async () => {
+    const findAll = async (includeField, includeAttribute) => {
         return await user.findAll({
             order: [['createdAt', 'DESC']],
-            include: [ Profiles ]
+            include: includeField,
+            attributes: {
+                include: includeAttribute,
+            }
         });
     };
 
@@ -21,14 +24,21 @@ const userRepository = (sequilize, DataTypes) => {
     };
 
     // find one with query
-    const findOne = async (whereClause, includeField) => {
-        return await user.findOne({
-          where: whereClause,
-          attributes: {
-            include: includeField,
-          },
+    const findOne = (params, include, includeAttribute) => {
+        return user.findOne({
+            where: params,
+            include: include,
+            attributes: {
+                include: includeAttribute,
+            },
         });
     };
+
+    const checkToken = (token) => {
+        return user.findOne({
+            where: token
+        });
+    }
 
     const findAndUpdate = async (payload, id) => {
         return await user.update(payload, {
@@ -58,18 +68,17 @@ const userRepository = (sequilize, DataTypes) => {
           password: data.password,
         });
 
-        var addProfile = profileModel.create({
+        var addProfile = await profileModel.create({
             firstName: data.profiles.firstName,
             lastName: data.profiles.lastName,
-            user_id: userCreate.id
+            userId: userCreate.id
         });
 
         if(addProfile){
-            return user.findOne({
+            return await user.findOne({
                 where: {
                     username: data.username
-                },
-                include: "profiles"
+                }
             });
         }
     }
@@ -83,7 +92,7 @@ const userRepository = (sequilize, DataTypes) => {
         });
     }
 
-    return { findAll, findAllQ, findOne, findById, createUser, deleteById, findAndUpdate };
+    return { findAll, findAllQ, findOne, findById, createUser, deleteById, findAndUpdate, checkToken };
 
 };
 

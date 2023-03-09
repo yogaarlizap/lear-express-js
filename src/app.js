@@ -1,31 +1,22 @@
 require("dotenv").config();
-
 const config = require("./config/config");
-const express = require("express");
+const expressConfig = require("./framework/webserver/express");
 const serverConfig = require("./framework/webserver/server");
-const connection = require("./framework/database/mysql/connection");
+const connection = require("./framework/database/" +
+  process.env.DATABASE +
+  "/connection");
 const routes = require("./framework/webserver/routes/routes");
 
-// this is entry point looks like...
+const { Sequelize } = require("sequelize");
 
-// configuration express etc...
+const express = require("express");
 
 const app = express();
 
-// console.log(config.mariadb.dbname);
-// Database Configuration...
-const sequelize = connection({
-  dbname: config.mariadb.dbname,
-  host: config.mariadb.host,
-  username: config.mariadb.username,
-  password: config.mariadb.password,
-  dialect: "mysql",
-});
+const sequelize = connection(config);
 
-serverConfig(app, sequelize, { host: config.host, port: config.port }).startServer();
-// routes...
+expressConfig(app);
+const server = serverConfig(app, config);
+server.startServer();
+
 routes(app, sequelize);
-
-// error handling...
-
-module.exports = app;

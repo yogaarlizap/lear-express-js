@@ -1,35 +1,40 @@
 'use strict';
 const {
-  Model, DataTypes
+  Sequelize, DataTypes
 } = require('sequelize');
+const sequelizeLoadRelation = require('../../../helper/relation-model');
+module.exports = (sequelize, withRelation = ['*']) => {
+  
+  const Profiles = sequelize.define(
+    'profiles',
+    {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        allowNull: false,
+        unique: true,
+        primaryKey: true
+      },
+      firstName: DataTypes.STRING,
+      lastName: DataTypes.STRING,
+      userId: {
+        type: DataTypes.UUID,
+        references: {
+          model: 'Users',
+          key: 'id',
+        }
+      }
+    }, 
+    {
+      sequelize,
+      modelName: 'Profiles',
+    });
+  
+    sequelizeLoadRelation(withRelation, 'users', () =>
+      Profiles.belongsTo(require('./users')(sequelize, []), {
+        foreignKey: 'userId'
+      })
+    );
 
-module.exports = (sequelize) => {
-  class Profiles extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      Profiles.belongsTo(models.users, {
-        foreignKey: "user_id"
-      });
-    }
-  }
-  Profiles.init({
-    id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      allowNull: false,
-      unique: true,
-      primaryKey: true
-    },
-    firstName: DataTypes.STRING,
-    lastName: DataTypes.STRING,
-    user_id: DataTypes.UUID
-  }, {
-    sequelize,
-    modelName: 'Profiles',
-  });
   return Profiles;
 };

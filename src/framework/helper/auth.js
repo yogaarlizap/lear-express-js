@@ -2,8 +2,15 @@ const bcrypt = require('bcrypt');
 const token = require('./token');
 
 const auth = async (userRepository) => {
+    const hashPassword = (password) => {
+        const salt = bcrypt.genSaltSync(10, "a");
+        const pass = bcrypt.hashSync(password, salt);
+        return pass;
+      };
+
+    // User Repo
     const checkUserUsername = async (username) => {
-        return await (await userRepository).findOneByProperty({ username });
+        return await (await userRepository).findOne({ username });
     }
 
     const validPassword = async (password, userPassword) => {
@@ -12,11 +19,10 @@ const auth = async (userRepository) => {
         }
     };
 
+    // Use case sendiri
     const checkUserLogin = async ({ username, password }) => {
-        const user = await (
-            await userRepository
-        ).findOne({username}, ["password"]);
-
+        
+        const user = await userRepository.findOne({username}, null, ['password'], null);
         if(!user){
             return false;
         } else {
@@ -26,29 +32,17 @@ const auth = async (userRepository) => {
                 return user;
             } else {
                 return {
-                    error: "wrong password"
+                    error: 'wrong password'
                 }
             }
         }
     };
 
-    const tokenStore = async (userId) => {
-        const generateToken = {
-            token: await token()
-        };
-
-        var data = {
-            token: await generateToken()
-        };
-
-        return await findAndUpdate(data, userId, userRepository)
-    }
-
     return {
         checkUserUsername,
         validPassword,
         checkUserLogin,
-        tokenStore
+        hashPassword
     };
 }
 

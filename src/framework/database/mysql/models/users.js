@@ -1,38 +1,49 @@
 'use strict';
 const {
-  Model, DataTypes
+  Sequelize, DataTypes
 } = require('sequelize');
-module.exports = (sequelize) => {
-  class Users extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      const Profiles = sequelize.models.Profile;
+const sequelizeLoadRelation = require('../../../helper/relation-model');
 
-      Users.hasOne(models.Profiles);
-    }
-  }
-  Users.init({
-    id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      allowNull: false,
-      unique: true,
-      primaryKey: true
-    },
-    username: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true
-    },
-    password: DataTypes.STRING,
-    token: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'Users',
+const userModel = (sequelize, withRelation = ['*']) => {
+  const Users = sequelize.define(
+    'users',
+    {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        allowNull: false,
+        unique: true,
+        primaryKey: true
+      },
+      username: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
+      },
+      password: DataTypes.STRING,
+      token: DataTypes.STRING
+    }, {
+      sequelize,
+      modelName: 'Users',
+      validation: {}
+    });
+    
+  // relasi
+  sequelizeLoadRelation(withRelation, 'profiles', () =>
+    Users.hasOne(require('./profiles')(sequelize, []), {
+      foreignKey: 'userId'
+    })
+  );
+
+  sequelizeLoadRelation(withRelation, "roles", () => {
+    Users.belongsToMany(require("./roles")(sequelize, ["permissions"]), {
+      through: "userhasroles",
+      foreignKey: "userId",
+      timestamps: false,
+    });
   });
+
   return Users;
 };
+
+module.exports = userModel;

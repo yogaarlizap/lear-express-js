@@ -69,8 +69,8 @@ const userRepository = (sequilize) => {
         });
 
         var addProfile = await profileModel.create({
-            firstName: data.profiles.firstName,
-            lastName: data.profiles.lastName,
+            firstName: data.firstName,
+            lastName: data.lastName,
             userId: userCreate.id
         });
 

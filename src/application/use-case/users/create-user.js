@@ -1,28 +1,33 @@
 const joi = require('joi');
 const userValidation = require('../../../framework/helper/auth');
-
-const createUser = async (req, sequelize) =>{
-    const userValidate = userValidation(sequelize);
+const hashPassword = require('../../../framework/helper/hashing-password');
+const createUser = async (req, userRepository) =>{
+    const userValidate = userValidation(userRepository);
 
     // Joi Validation
     const schema = joi.object({
         username: joi.string().required(),
         password: joi.string().required(),
         firstName: joi.string().required(),
-        lastName: joi.string().required()
+        lastName: joi.string().required(),
+        role: joi.array().items(joi.integer().required())
     });
 
     try {
-        const username = req.body.username;
-        const firstName = req.body.firstName;
-        const lastName = req.body.lastName;
-        const password = userValidate.hashPassword(req.body.password);
-        
+        const data = {
+            username: req.body.username,
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            password: hashPassword(req.body.password),
+            role: req.body.roles
+        }
+        return console.log(data);
         const validation = schema.validate({
             username,
             password,
             firstName,
-            lastName
+            lastName,
+            role
         });
 
         if(validation.error){
@@ -34,7 +39,7 @@ const createUser = async (req, sequelize) =>{
             return { error: `"Username" Already Exist`};
         }
 
-        return userRepository.createUser(data, sequelize);
+        return userRepository.createUser();
     } catch (error) {
         return error;
     }

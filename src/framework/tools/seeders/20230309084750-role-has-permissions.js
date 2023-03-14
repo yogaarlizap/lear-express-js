@@ -1,6 +1,5 @@
 'use strict';
-const user = require('../factory/users-factory');
-
+const roleHasPermissions = require('../factory/role-has-permissions-factory');
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
@@ -13,7 +12,7 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-    await queryInterface.bulkInsert('users', user());
+    await queryInterface.bulkInsert('rolehaspermissions', roleHasPermissions());
   },
 
   async down (queryInterface, Sequelize) {
@@ -23,6 +22,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete('users', null, {});
+    await queryInterface.bulkDelete('rolehaspermissions', null, {});
   }
 };

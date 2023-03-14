@@ -1,6 +1,5 @@
 'use strict';
-const user = require('../factory/users-factory');
-
+const permissions = require('../factory/permissions-factory');
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
@@ -13,7 +12,7 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-    await queryInterface.bulkInsert('users', user());
+    await queryInterface.bulkInsert('permissions', permissions());
   },
 
   async down (queryInterface, Sequelize) {
@@ -23,6 +22,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete('users', null, {});
+    await queryInterface.bulkDelete('permissions', null, {});
   }
 };

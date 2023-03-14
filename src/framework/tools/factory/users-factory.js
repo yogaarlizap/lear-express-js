@@ -1,4 +1,3 @@
-const bcrypt = require('bcrypt');
 const hashingPassword = require('../../helper/hashing-password');
 
 const users = () => {
@@ -27,7 +26,7 @@ const users = () => {
             password: hashingPassword("password"),
             createdAt: new Date(),
             updatedAt: new Date()
-        },
+        }
     ];
 }
 

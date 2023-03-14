@@ -18,7 +18,7 @@ module.exports = (sequelize, withRelation = ['*']) => {
       firstName: DataTypes.STRING,
       lastName: DataTypes.STRING,
       userId: {
-        type: DataTypes.UUID,
+        type: DataTypes.INTEGER,
         references: {
           model: 'Users',
           key: 'id',

@@ -9,8 +9,7 @@ const userModel = (sequelize, withRelation = ['*']) => {
     'users',
     {
       id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
+        type: DataTypes.INTEGER,
         allowNull: false,
         unique: true,
         primaryKey: true

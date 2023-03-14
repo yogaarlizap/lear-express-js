@@ -11,7 +11,7 @@ const roles = () => {
         },
         {
             name: "Trainee"
-        },
+        }
     ];
 }
 

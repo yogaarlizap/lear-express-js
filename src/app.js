@@ -6,6 +6,7 @@ const connection = require("./framework/database/" +
   process.env.DATABASE +
   "/connection");
 const routes = require("./framework/webserver/routes/routes");
+const connectionMongodb = require('./framework/database/mongodb/connection');
 
 const { Sequelize } = require("sequelize");
 

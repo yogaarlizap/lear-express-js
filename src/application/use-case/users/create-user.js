@@ -21,7 +21,7 @@ const createUser = async (req, userRepository) =>{
             password: hashPassword(req.body.password),
             role: req.body.roles
         }
-        return console.log(data);
+        
         const validation = schema.validate({
             username,
             password,

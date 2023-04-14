@@ -18,11 +18,16 @@ const userRepository = () => {
         return await userModel.findOne(data)
     }
 
+    const updateOne = async(id, data) => {
+        return await userModel.findOneAndUpdate(id, data);
+    }
+
     return {
         getAll,
         create,
         getOne,
-        findOne
+        findOne,
+        updateOne
     }
 };
 

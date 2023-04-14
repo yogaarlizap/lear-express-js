@@ -1,12 +1,9 @@
 const mongoose = require('mongoose');
-
 const Schema = mongoose.Schema;
 
 const profileSchema = new Schema({
-    firstName: String,
-    lastName: String,
-    image: String
-});
+    
+})
 
 const usersSchema = new Schema({
     username: {
@@ -14,8 +11,15 @@ const usersSchema = new Schema({
         unique: true
     },
     password: String,
-    token: String,
-    profile: [profileSchema]
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
+    },
+    profile: {type: mongoose.Schema.Types.ObjectId, ref: 'Profiles'}
 });
 
 module.exports = mongoose.model('Users', usersSchema);;

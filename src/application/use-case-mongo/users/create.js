@@ -5,8 +5,7 @@ const validate = (data) => {
     const schema = joi.object({
         username: joi.string().required(),
         password: joi.string().required(),
-        firstName: joi.string().required(),
-        lastName: joi.string()
+        profile: joi.object()
     });
 
     const validator = schema.validate(data);
@@ -14,7 +13,6 @@ const validate = (data) => {
 }
 
 const create = async (data, userRepository) => {
-    
     validate(data);
     
     const user = await userRepository.findOne({ username: data.username });

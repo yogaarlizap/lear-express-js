@@ -11,7 +11,9 @@ const userRoute = (sequelize) => {
     // router.use('/', passport.authenticate('bearer', { session:false }));
     router.get('/mongodb', controllerMongodb.getAllUsers);
     router.get('/mongodb/:id', controllerMongodb.findById);
+    router.put('/mongodb/:id', controllerMongodb.updateOne);
     router.post('/mongodb', controllerMongodb.createUser);
+    
     router.get('/', controller.index);
     router.get('/:id', controller.show);
     router.get('/filter', controller.filter);
